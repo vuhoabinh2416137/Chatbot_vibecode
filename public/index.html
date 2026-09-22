@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MathMaster 12 - Trợ Lý Gia Sư AI Toán Học Lớp 12</title>
+  <meta name="description" content="Chatbot AI thông minh giải Toán lớp 12, hỗ trợ LaTeX, nhận diện ảnh đề bài, hướng dẫn bấm máy Casio fx-580VN X miễn phí.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220%22%3E<text y=%2226%22 font-size=%2226%22>📐</text></svg>">
+
+  <!-- Google Fonts: Be Vietnam Pro & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <!-- KaTeX for rendering mathematical formulas -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+
+  <!-- Marked.js for Markdown parsing -->
+  <script src="https://cdn.jsdelivr.net/npm/marked@13.0.2/marked.min.js"></script>
+
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="dark-theme">
+  <!-- Main Layout Wrapper -->
+  <div class="app-layout">
+    <!-- Sidebar / Drawer -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="brand">
+          <div class="brand-icon">📐</div>
+          <div class="brand-text">
+            <h2>MathMaster 12</h2>
+            <span class="badge-tag">Toán THPT</span>
+          </div>
+        </div>
+        <button class="icon-btn close-sidebar-btn" id="closeSidebarBtn" title="Đóng menu">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <div class="sidebar-actions">
+        <button class="new-chat-btn" id="newChatBtn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+          Cuộc trò chuyện mới
+        </button>
+      </div>
+
+      <!-- Quick Topics for Grade 12 -->
+      <div class="sidebar-section">
+        <div class="section-title">Chủ đề trọng tâm 12</div>
+        <div class="topic-list">
+          <button class="topic-btn" data-prompt="Hướng dẫn phương pháp tìm cực trị và tiệm cận của hàm số phân thức bậc nhất trên bậc nhất $y = \frac{ax+b}{cx+d}$ kèm ví dụ mẫu.">
+            <span>📈</span> Khảo sát hàm số & Tiệm cận
+          </button>
+          <button class="topic-btn" data-prompt="Cách tìm nguyên hàm bằng phương pháp đổi biến số và từng phần: $\int u dv = uv - \int v du$ với mẹo 'Nhất log, nhì đa, tam lượng, tứ mũ'.">
+            <span>🔄</span> Nguyên hàm & Tích phân
+          </button>
+          <button class="topic-btn" data-prompt="Công thức viết phương trình mặt phẳng đi qua 1 điểm và có vectơ pháp tuyến $\vec{n}$, và góc giữa hai mặt phẳng trong Oxyz.">
+            <span>📐</span> Tọa độ Oxyz không gian
+          </button>
+          <button class="topic-btn" data-prompt="Tổng hợp các mẹo bấm máy tính Casio fx-580VN X để tìm nghiệm phương trình, tính tích phân và giải hệ phương trình Oxyz.">
+            <span>🧮</span> Tuyệt kỹ bấm máy Casio 580
+          </button>
+          <button class="topic-btn" data-prompt="Công thức tính xác suất có điều kiện $P(A|B) = \frac{P(AB)}{P(B)}$ và ứng dụng trong các bài toán thực tế.">
+            <span>📊</span> Xác suất có điều kiện
+          </button>
+        </div>
+      </div>
+
+      <!-- Chat Sessions History -->
+      <div class="sidebar-section history-section">
+        <div class="section-title">Lịch sử bài giải</div>
+        <div class="history-list" id="historyList">
+          <!-- Dynamically populated via app.js -->
+        </div>
+      </div>
+
+      <!-- Sidebar Footer -->
+      <div class="sidebar-footer">
+        <button class="footer-btn" id="settingsBtn" title="Cài đặt API Key & Model">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          <span>Cài đặt API</span>
+        </button>
+        <button class="footer-btn" id="themeToggleBtn" title="Chuyển đổi Sáng / Tối">
+          <svg class="sun-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+          <svg class="moon-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <span id="themeText">Giao diện tối</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Overlay for mobile sidebar -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Main Chat Workspace -->
+    <main class="chat-workspace">
+      <!-- Top Navbar -->
+      <header class="chat-header">
+        <div class="header-left">
+          <button class="icon-btn toggle-sidebar-btn" id="toggleSidebarBtn" title="Mở menu">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+          </button>
+          <div class="header-title">
+            <h1 id="currentChatTitle">Toán Học Lớp 12 & Ôn Thi THPT</h1>
+            <div class="api-status-pill" id="apiStatusBadge">
+              <span class="status-dot"></span>
+              <span class="status-label">Kiểm tra kết nối...</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mode Selector -->
+        <div class="header-right">
+          <div class="mode-selector" title="Chọn phương pháp giải">
+            <label for="solveModeSelect" class="sr-only">Chế độ giải</label>
+            <select id="solveModeSelect">
+              <option value="full">📝 Giải chi tiết & Casio</option>
+              <option value="hint">💡 Gợi ý phương pháp (Socratic)</option>
+              <option value="casio">🧮 Chuyên sâu bấm Casio</option>
+            </select>
+          </div>
+          <button class="icon-btn clear-chat-btn" id="clearChatBtn" title="Xóa cuộc trò chuyện này">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+          </button>
+        </div>
+      </header>
+
+      <!-- Chat Messages Container -->
+      <div class="chat-container" id="chatContainer">
+        <!-- Welcome Hero View (Hiển thị khi chưa có tin nhắn) -->
+        <div class="welcome-hero" id="welcomeHero">
+          <div class="hero-badge">🎓 ÔN THI TỐT NGHIỆP THPT QUỐC GIA</div>
+          <h2 class="hero-title">Chào bạn! Hôm nay chúng ta sẽ chinh phục bài Toán 12 nào?</h2>
+          <p class="hero-subtitle">
+            Hỗ trợ giải đáp chi tiết công thức $\LaTeX$, phân tích dạng toán, mẹo bấm máy tính Casio fx-580 và nhận diện bài tập qua ảnh chụp.
+          </p>
+
+          <div class="sample-cards">
+            <div class="sample-card" data-sample="Tìm giá trị lớn nhất và giá trị nhỏ nhất của hàm số $y = x^3 - 3x^2 + 2$ trên đoạn $[0; 3]$. Hướng dẫn cả cách tính đạo hàm và cách bấm máy Casio fx-580.">
+              <div class="card-icon">📊</div>
+              <div class="card-text">
+                <strong>GTLN - GTNN Hàm số</strong>
+                <span>Khảo sát $y = x^3 - 3x^2 + 2$ trên $[0; 3]$ & cách bấm Table</span>
+              </div>
+            </div>
+            <div class="sample-card" data-sample="Tính tích phân $I = \int_0^1 (2x + 1) e^x dx$ bằng phương pháp tích phân từng phần.">
+              <div class="card-icon">∫</div>
+              <div class="card-text">
+                <strong>Tích phân từng phần</strong>
+                <span>Tính $\int_0^1 (2x + 1) e^x dx$ với sơ đồ đường chéo</span>
+              </div>
+            </div>
+            <div class="sample-card" data-sample="Trong không gian Oxyz, cho mặt cầu $(S): x^2 + y^2 + z^2 - 2x + 4y - 6z - 2 = 0$. Tìm tâm $I$ và bán kính $R$ của mặt cầu.">
+              <div class="card-icon">🌐</div>
+              <div class="card-text">
+                <strong>Hình học Oxyz</strong>
+                <span>Xác định tâm và bán kính mặt cầu $(S)$</span>
+              </div>
+            </div>
+            <div class="sample-card" data-sample="Một hộp chứa 5 viên bi đỏ và 4 viên bi xanh. Lấy ngẫu nhiên lần lượt 2 viên không hoàn lại. Tính xác suất để viên thứ hai màu đỏ biết viên thứ nhất màu đỏ.">
+              <div class="card-icon">🎲</div>
+              <div class="card-text">
+                <strong>Xác suất có điều kiện</strong>
+                <span>Áp dụng công thức nhân xác suất $P(A \cap B)$</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dynamic message feed -->
+        <div class="messages-feed" id="messagesFeed"></div>
+      </div>
+
+      <!-- Quick Math Symbols Toolbar -->
+      <div class="math-symbols-bar" id="mathToolbar">
+        <div class="math-toolbar-scroll">
+          <span class="math-tool-label">Ký hiệu nhanh:</span>
+          <button class="math-chip" data-insert="\int ">$\int$</button>
+          <button class="math-chip" data-insert="\int_{a}^{b} ">$\int_a^b$</button>
+          <button class="math-chip" data-insert="\frac{a}{b} ">\frac{a}{b}</button>
+          <button class="math-chip" data-insert="\sqrt{x} ">$\sqrt{x}$</button>
+          <button class="math-chip" data-insert="x^{2} ">$x^2$</button>
+          <button class="math-chip" data-insert="\lim_{x \to +\infty} ">$\lim$</button>
+          <button class="math-chip" data-insert="\vec{u} ">$\vec{u}$</button>
+          <button class="math-chip" data-insert="f'(x) ">$f'(x)$</button>
+          <button class="math-chip" data-insert="\pi ">$\pi$</button>
+          <button class="math-chip" data-insert="\infty ">$\infty$</button>
+          <button class="math-chip" data-insert="\Delta ">$\Delta$</button>
+          <button class="math-chip" data-insert="\in ">$\in$</button>
+          <button class="math-chip" data-insert="\pm ">$\pm$</button>
+        </div>
+      </div>
+
+      <!-- Bottom Chat Input Section -->
+      <div class="chat-input-wrapper">
+        <!-- Image Preview Bar (nếu có ảnh đính kèm) -->
+        <div class="image-preview-container" id="imagePreviewContainer" style="display: none;">
+          <div class="image-preview-card">
+            <img id="imagePreviewImg" src="" alt="Đề bài tải lên">
+            <button class="remove-img-btn" id="removeImgBtn" title="Xóa ảnh">×</button>
+            <span class="image-name" id="imageFileName">anh-bai-toan.jpg</span>
+          </div>
+        </div>
+
+        <!-- Input Box Form -->
+        <form class="chat-input-form" id="chatForm">
+          <!-- Upload Image Button -->
+          <button type="button" class="action-btn upload-btn" id="uploadBtn" title="Tải ảnh đề bài (hoặc Ctrl+V để dán ảnh)">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          </button>
+          <input type="file" id="imageInput" accept="image/png, image/jpeg, image/webp" style="display: none;">
+
+          <!-- Textarea Input -->
+          <textarea
+            id="userInput"
+            rows="1"
+            placeholder="Nhập câu hỏi Toán 12 (ví dụ: Tính đạo hàm, phương trình Oxyz...) hoặc dán ảnh đề bài (Ctrl+V)..."
+            autocomplete="off"
+          ></textarea>
+
+          <!-- Send Button -->
+          <button type="submit" class="action-btn send-btn" id="sendBtn" title="Gửi câu hỏi (Enter)">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          </button>
+        </form>
+
+        <div class="input-footer-note">
+          MathMaster 12 có thể mắc lỗi. Học sinh nên kiểm tra lại các bước biến đổi quan trọng trước khi làm bài thi.
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Settings Modal -->
+  <div class="modal-overlay" id="settingsModal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>⚙️ Cài Đặt Kết Nối API</h3>
+        <button class="icon-btn" id="closeSettingsBtn">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="apiKeyInput">Google Gemini API Key (Miễn phí):</label>
+          <input
+            type="password"
+            id="apiKeyInput"
+            placeholder="AIzaSy..."
+            autocomplete="off"
+          >
+          <p class="form-hint">
+            Chưa có key? Nhận key miễn phí trong 30 giây tại
+            <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer">Google AI Studio ↗</a>.
+            Key được lưu an toàn trong trình duyệt của bạn (LocalStorage) hoặc file <code>.env</code>.
+          </p>
+        </div>
+
+        <div class="form-group">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <label for="modelSelect">Phiên bản Mô hình AI:</label>
+            <button type="button" id="fetchModelsBtn" class="action-text-btn" style="font-size: 0.75rem; color: var(--primary);">
+              🔄 Quét model cho Key này
+            </button>
+          </div>
+          <select id="modelSelect">
+            <option value="auto" selected>⚡ Tự động chọn model tối ưu nhất (Khuyên dùng)</option>
+            <option value="gemini-2.5-flash">Gemini 2.5 Flash (Nhanh & Ổn định nhất)</option>
+            <option value="gemini-flash-latest">Gemini Flash Latest (Bản Flash mới nhất)</option>
+            <option value="gemini-3.6-flash">Gemini 3.6 Flash</option>
+            <option value="gemini-2.5-pro">Gemini 2.5 Pro (Suy luận sâu)</option>
+          </select>
+        </div>
+
+        <div class="info-box">
+          <strong>💡 Mẹo dùng miễn phí:</strong>
+          Gói Free của Google AI Studio cấp tới 15 lượt gọi mỗi phút và 1 triệu token, hoàn toàn thoải mái để học tập và ôn thi cả ngày!
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="cancelSettingsBtn">Hủy</button>
+        <button class="btn btn-primary" id="saveSettingsBtn">Lưu Cấu Hình</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- App Logic -->
+  <script src="app.js"></script>
+</body>
+</html>
